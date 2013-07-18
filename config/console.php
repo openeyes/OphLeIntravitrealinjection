@@ -25,7 +25,7 @@ while ($file = readdir($dh)) {
 	if (preg_match('/^(.*?)Command\.php$/',$file,$m)) {
 		
 		$config['commandMap'][strtolower($m[1])] = array(
-				'class' => "application.modules.OphLeIntravitrealInjection.commands.{$m[1]}Command",
+				'class' => "application.modules.OphLeIntravitrealinjection.commands.{$m[1]}Command",
 		);
 	}
 }
