@@ -21,6 +21,7 @@
 class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand 
 {
 	protected $DATA_FOLDER = 'data/import/legacyinjections';
+	const NOPTNT = 100;
 	
 	public function getName()
 	{
@@ -143,7 +144,7 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 				parent::insert($table, $raw_columns, $raw_data);
 			}
 		} catch (Exception $e) {
-			if ($e->getCode() == 'NOPTNT') {
+			if ($e->getCode() == self::NOPTNT) {
 				echo "WARN: " . $e->getMessage();
 			}
 			else {
@@ -165,11 +166,16 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 			// for patient importing we need to trigger the search if the patient isn't there
 			if (!$patient = Patient::model()->find($column . '= ?',array($value))) {
 				$patient = new Patient;
-				$patient->$column = $value;
-				$data = $patient->search();
-				$nr = $patient->search_nr();
+				$patient->$column = sprintf('%07s',$value);
+				$data_provider = $patient->search(array(
+					'pageSize' => 20,
+					'currentPage' => 0,
+					'sortBy' => 'hos_num*1',
+					'sortDir' => 'asc',
+					'first_name'=>null, 'last_name'=>null));
+				$nr = $patient->search_nr(array('first_name'=>null, 'last_name'=>null));
 				if ($nr != 1) {
-					throw new Exception('Patient not found with ' . $column . ' of ' . $value, 'NOPTNT');
+					throw new Exception('Patient not found with ' . $column . ' of ' . $value, self::NOPTNT);
 				}
 			}
 			$this->column_value_map[$col_spec][$value] = $patient->id;
