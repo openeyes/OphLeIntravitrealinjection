@@ -177,6 +177,11 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 				if ($nr != 1) {
 					throw new Exception('Patient not found with ' . $column . ' of ' . $value, self::NOPTNT);
 				}
+				// have to iterate through getData, though we know there should only be 
+				// one record
+				foreach ($data_provider->getData() as $item) {
+					$patient = $item;
+				}
 			}
 			$this->column_value_map[$col_spec][$value] = $patient->id;
 		}
