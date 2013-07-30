@@ -22,6 +22,7 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 {
 	protected $DATA_FOLDER = 'data/import/legacyinjections';
 	const NOPTNT = 100;
+	// flag to prevent PAS import
 	const NOPAS = true;
 	const EP_HOS_NUM_COLNAME = '[patient_id=patient.hos_num]';
 	
@@ -35,15 +36,31 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 	protected $event_type_id;
 	protected $drug_names_by_id = array();
 	
+	public function getHelp()
+	{
+		return <<<EOH
+Imports legacy intravitreal injection events. Extends the relatedimportcomplex command, and is expecting three data files:
+	episode
+	event
+	et_ophleintravitrealinjection_injection
+	
+	along with the cpxmap file as standard for this import method.
+	
+	Has various functions based on certain expectations. It is set to not use the PAS when importing, so that legacy injection events
+	are only created for patients that are already in the OE database. Patients that have not yet been brought in from PAS will be stored
+	as unattached injection elements, which will then be associated with a patient through the patient_after_find event.
+				
+	Will accept a numeric argument which is the limit of the number of hos nums that will be output at the end of the process. These hosnums are
+	for patients that have archive records imported (i.e. the patients don't yet exist in the db). This is primarily for testing purposes.
+
+EOH;
+	}
 	
 	/*
 	 * extends the relative import complex command to perform some custom import behaviour for legacy injections
 	 * Once the full requirements for this were resolved it would probably have been better to write an import
 	 * command from scratch, but we'd committed to the format so the additional functionality has been wrapped into 
-	 * the code. To whit, if the patient identified by the hosnum in the episode file has not yet been pulled in 
-	 * from PAS, we need to avoid creating either the episode or event entry, and store the relevant information on 
-	 * the injection object. This will then allow an event handler to create the necessary data when/if the patient
-	 * is ever pulled in from PAS.
+	 * the code. 
 	 */
 	public function run($args)
 	{
@@ -52,6 +69,17 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 
 		$this->event_type_id = $event_type->id;	
 		parent::run($args);
+		echo count(array_keys($this->patient_archive_episode)) . " archive episodes created\n";
+		if (count($args) && $sample_limit = (int)$args[0]) {
+			$counter = 0;
+			echo "Sample hos nums:\n";
+			foreach (array_keys($this->patient_archive_episode) as $key) {
+				echo $this->patient_archive_episode[$key]['hosnum'] . "\n";
+				if ($counter++ > $sample_limit) {
+					break;
+				}
+			}
+		}
 	}
 	
 	/**
