@@ -71,7 +71,9 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 		// will receive user inputs.
 		return array(
 			array('event_id, eye_id, left_drug_id, right_drug_id, left_number, right_number, ', 'safe'),
-			array('eye_id, left_drug_id, right_drug_id, left_number, right_number, ', 'required'),
+			array('eye_id', 'required'),
+			array('left_drug_id, left_number', 'requiredIfSide', 'side' => 'left'),
+			array('right_drug_id, right_number', 'requiredIfSide', 'side' => 'right'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, eye_id, left_drug_id, right_drug_id, left_number, right_number, ', 'safe', 'on' => 'search'),
@@ -174,6 +176,89 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 				return "L: " . $this->left_drug->name . " / R: " . $this->right_drug->name;
 			}
 		}
+	}
+	
+	/**
+	 * unarchive this injection and attach it to the provided patient object
+	 * (typically this is expected to be called when the patient is found for the
+	 * first time by a PAS search)
+	 * 
+	 * @param Patient $patient
+	 * @throws Exception
+	 */
+	public function unArchive($patient)
+	{
+		// if there isn't an archive firm id then this cannot be unarchived (presumably because it has been before, and this function
+		// has been called in error
+		if ($this->archive_firm_id) {
+			$transaction = Yii::app()->db->beginTransaction();
+			
+			try {
+				$firm = Firm::model()->findByPk($this->archive_firm_id);
+				if (!$firm) {
+					$firm = Firm::model()->findByPk(Yii::app()->param['OphLeIntravitrealinjection_default_firm_id']);
+				}
+				
+				// Don't want to set up an episode that clashes with one that is already open
+				// (this shouldn't happen, but it is possible that two legacy injections might be unarchived for the same patient
+				// and have different firm assigments)
+				$subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+				if (!$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialty_id, $patient->id) ) {
+					$episode = new Episode();
+					$episode->attributes = array('patient_id' => $patient->id, 'firm_id' => $firm->id);
+					$episode->start_date = $this->created_date;
+					$episode->created_user_id = $this->created_user_id;
+					$episode->created_date = $this->created_date;
+					$episode->last_modified_user_id = $this->last_modified_user_id;
+					$episode->last_modified_date = $this->last_modified_date;
+				}
+				
+				// set the eye assignment
+				if (!$episode->eye_id) {
+					$episode->eye_id = $this->eye_id;
+				}
+				else {
+					if ($episode->eye_id != $this->eye_id) {
+						$episode->eye_id = Eye::BOTH;
+					}
+				}
+				
+				if (!$episode->save(true, null, true)) {
+					throw new Exception('unable to create episode ' . print_r($episode->getErrors(),true));;
+				}
+				
+				$event_type = EventType::model()->find('class_name = ?', array('OphLeIntravitrealinjection'));
+				
+				$event_type_id = $event_type->id;
+				
+				$event = new Event();
+				$event->attributes = array('episode_id' => $episode->id, 'event_type_id' => $event_type_id);
+				$event->info = $this->getInfoText();
+				$event->created_user_id = $this->created_user_id;
+				$event->created_date = $this->created_date;
+				$event->last_modified_user_id = $this->last_modified_user_id;
+				$event->last_modified_date = $this->last_modified_date;
+				if (!$event->save(true, null, true)) {
+					throw new Exception('unable to create event ' . print_r($event->getErrors(),true));
+				}
+				
+				$audit_data = $this->attributes;
+				
+				$this->event_id = $event->id;
+				$this->archive_firm_id = null;
+				$this->archive_hosnum = null;
+				if (!$this->save(true, null, true)) {
+					throw new Exception('unable to save unarchived legacy injection ' . $this->id . ' ' . print_r($this->getErrors(),true));
+				}
+				
+				Audit::add(get_class($this), 'Unarchived', $audit_data);
+				$transaction->commit();
+				
+			} catch (Exception $e) {
+				$transaction->rollback();
+				throw $e;
+			}
+		}		
 	}
 }
 ?>

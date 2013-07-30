@@ -25,12 +25,14 @@ class m130717_150253_event_type_OphLeIntravitrealinjection extends CDbMigration
 		// create the table for this element type: et_modulename_elementtypename
 		$this->createTable('et_ophleinjection_injection', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'event_id' => 'int(10) unsigned NOT NULL',
+				'event_id' => 'int(10) unsigned',
 				'eye_id' => 'int(10) unsigned NOT NULL DEFAULT 3', // Eye
 				'left_drug_id' => 'int(10) unsigned', // Drug
 				'right_drug_id' => 'int(10) unsigned', // Drug
 				'left_number' => 'int(10) unsigned', // Number of Injections
 				'right_number' => 'int(10) unsigned', // Number of Injections
+				'archive_firm_id' => 'int(10) unsigned',
+				'archive_hosnum' => 'varchar(40)',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
