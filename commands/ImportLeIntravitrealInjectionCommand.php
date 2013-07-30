@@ -121,6 +121,7 @@ EOH;
 			}
 		}
 		echo "WARN: no appropriate firm in firm id list [" . implode(', ', $firm_ids) . "] using default firm\n";
+		return $this->default_firm_id;
 	}
 	
 	/**
