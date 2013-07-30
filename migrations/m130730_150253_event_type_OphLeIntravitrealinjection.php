@@ -1,5 +1,5 @@
 <?php 
-class m130717_150253_event_type_OphLeIntravitrealinjection extends CDbMigration
+class m130730_150253_event_type_OphLeIntravitrealinjection extends CDbMigration
 {
 	public function up()
 	{
