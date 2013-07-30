@@ -26,6 +26,11 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 	const NOPAS = true;
 	const EP_HOS_NUM_COLNAME = '[patient_id=patient.hos_num]';
 	
+	// default firm id
+	protected $default_firm_id = 110;
+	// list of subspecialty ids in order of precedence that we want to use for firms
+	protected $ordered_subspecialty_ids = array(8, 15);
+	
 	public function getName()
 	{
 		return 'Import Legacy Intravitreal Injection Command.';
@@ -101,6 +106,24 @@ EOH;
 	}
 	
 	/**
+	 * determines the best firm id to use out of a selection. If none of the firms have the appropriate subspecialty
+	 * we will use the default firm
+	 * 
+	 * @param integer[] $firm_ids
+	 * @return integer
+	 */
+	protected function getFirmIdWithBestSubspecialty($firm_ids) {
+		foreach ($this->ordered_subspecialty_ids as $sid) {
+			foreach ($firm_ids as $fid) {
+				if ($this->getFirmSubspecialtyId($fid) == $sid) {
+					return $fid;
+				}
+			}
+		}
+		echo "WARN: no appropriate firm in firm id list [" . implode(', ', $firm_ids) . "] using default firm\n";
+	}
+	
+	/**
 	 * map of subspecialty id for a firm
 	 * TODO: prioritise the subspecialties that we map to, so that it pertains more specifically to the likely
 	 * subspecialty for an injection event.
@@ -114,12 +137,12 @@ EOH;
 		if (!isset($this->firm_subspecialty_map[$firm_id])) {
 			$query = "SELECT sa.subspecialty_id FROM  service_subspecialty_assignment sa, firm f WHERE sa.id = f.service_subspecialty_assignment_id AND f.id = " . $db->quoteValue($firm_id);
 			$res =  $db->createCommand($query)->query();
+			$this->firm_subspecialty_map[$firm_id] = array();
 			foreach ($res as $row) {
-				// we'll grab the last if there are multiple.
-				$this->firm_subspecialty_map[$firm_id] = $row['subspecialty_id'];
+				$this->firm_subspecialty_map[$firm_id][] = $row['subspecialty_id'];
 			}
 		}
-		return $this->firm_subspecialty_map[$firm_id];
+		return $this->firm_subspecialty_map[$firm_id][0];
 	}
 	
 	/**
@@ -422,7 +445,23 @@ EOH;
 		
 		// split the col spec on dot, do select and store
 		list($table, $column) = explode(".", $col_spec);
-		if ($table == 'patient') {
+		if ($col_spec == 'firm.pas_code') {
+			// we can have more than one firm based on the pas_code, so we need to get the best one for the
+			// purposes of injection.
+			$firms = Firm::model()->findAll('pas_code = ?', array($value));
+			$fids = array();
+			foreach ($firms as $f) {
+				$fids[] = $f->id;
+			}
+			if (count($fids)) {
+				$this->column_value_map[$col_spec][$value] = $this->getFirmIdWithBestSubspecialty($fids);
+			} 
+			else {
+				echo "WARN: No firm match found for pas_code " . $value . ", using default firm\n";
+				$this->column_value_map[$col_spec][$value] = $this->default_firm_id;
+			}
+		}
+		else if ($table == 'patient') {
 			// for patient importing we need to trigger the search if the patient isn't there
 			// TODO use noPas when PAS suppressed for import and we put data into holding event ...
 			if (self::NOPAS) {
