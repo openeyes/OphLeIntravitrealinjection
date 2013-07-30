@@ -507,4 +507,14 @@ EOH;
 		
 	}
 	
+	protected function getTableVal($col_spec, $value)
+	{
+		$val = parent::getTableVal($col_spec, $value);
+		if ($val == -1) {
+			// record that we are tracking this patient in archive mode
+			$this->episode_archive_record = true;
+		}
+		return $val;
+	}
+	
 }
