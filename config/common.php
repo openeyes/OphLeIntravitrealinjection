@@ -1,9 +1,9 @@
 <?php
 return array(
 	'import' => array(
-			'application.modules.ophleintravitrealinjection.*',
-			'application.modules.ophleintravitrealinjection.components.*',
-			'application.modules.ophleintravitrealinjection.models.*',
+			'application.modules.OphLeIntravitrealinjection.*',
+			'application.modules.OphLeIntravitrealinjection.components.*',
+			'application.modules.OphLeIntravitrealinjection.models.*',
 	),
 	'components' => array(
 		'event' => array(
