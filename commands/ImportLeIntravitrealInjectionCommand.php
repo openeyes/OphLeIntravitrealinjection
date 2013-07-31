@@ -345,16 +345,36 @@ EOH;
 						$raw_columns[] = 'event_type_id';
 						$raw_data[] = $this->event_type_id;
 					}
+					
 					list($imp_id, $insert_cols, $data) = $this->handleRawData($raw_columns, $raw_data);
+					
+					$col_pos = array(
+							'created_user_id' => null,
+							'created_date' => null,
+							'last_modified_user_id' => null,
+							'last_modified_date' => null
+					);
 					
 					// get the episode id
 					foreach ($insert_cols as $i => $col) {
 						if ($col == 'episode_id') {
 							$episode_imp_id = $data[$i];
-							break;
+						}
+						if (array_key_exists($col, $col_pos)) {
+							$col_pos[$col] = $i;
 						}
 					}
 					
+					// populate missing datestamp values if necessary
+					if ($col_pos['last_modified_user_id'] == null && $col_pos['created_user_id'] != null) {
+						$insert_cols[] = 'last_modified_user_id';
+						$data[] = $data[$col_pos['created_user_id']];
+					}
+					if ($col_pos['last_modified_date'] == null && $col_pos['created_date'] != null) {
+						$insert_cols[] = 'last_modified_date';
+						$data[] = $data[$col_pos['created_date']];
+					}
+						
 					if (array_key_exists($episode_imp_id, $this->patient_archive_episode)) {
 						// we are not storing this against a live patient
 						$this->patient_archive_event['a' . $imp_id] = array(

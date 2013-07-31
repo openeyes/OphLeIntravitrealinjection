@@ -22,4 +22,10 @@ class DefaultController extends BaseEventTypeController
 	{
 		parent::actionPrint($id);
 	}
+	
+	public function generateLegacyUrl() 
+	{
+		$base_url = Yii::app()->params['OphLeIntravitrealinjection_legacylink'];
+		return strtr($base_url, array('{patient.hos_num}' => $this->patient->hos_num));
+	}
 }

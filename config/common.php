@@ -1,20 +1,23 @@
 <?php
 return array(
 	'import' => array(
-			'application.modules.OphLeIntravitrealinjection.*',
-			'application.modules.OphLeIntravitrealinjection.components.*',
-			'application.modules.OphLeIntravitrealinjection.models.*',
+		'application.modules.OphLeIntravitrealinjection.*',
+		'application.modules.OphLeIntravitrealinjection.components.*',
+		'application.modules.OphLeIntravitrealinjection.models.*',
 	),
 	'components' => array(
 		'event' => array(
-				'observers' => array(
-						'patient_after_find' => array(
-								'import_injections' => array(
-										'class' => 'OphLeIntravitrealinjection_EventHandler',
-										'method' => 'patientFound',
-								),
-						),
-				)
+			'observers' => array(
+				'patient_after_find' => array(
+					'import_injections' => array(
+						'class' => 'OphLeIntravitrealinjection_EventHandler',
+						'method' => 'patientFound',
+					),
+				),
 			)
 		)
-	);
+	),
+	'params' => array(
+		'OphLeIntravitrealinjection_legacylink' => 'http://INTRANET3/MEHClinical/Default.aspx?patient={patient.hos_num}',
+	)
+);

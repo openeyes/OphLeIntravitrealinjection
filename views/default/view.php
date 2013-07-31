@@ -21,7 +21,13 @@
 <?php
 	$this->breadcrumbs=array($this->module->id);
 	$this->header();
+
+	if (Yii::app()->params['OphLeIntravitrealinjection_legacylink']) {
+		$this->event_actions[] = EventAction::link('Legacy Data', $this->generateLegacyUrl(), null, array('target' => '_blank'));
+	}
 ?>
+
+<?php  $this->renderPartial('//patient/event_actions'); ?>
 
 <h3 class="withEventIcon"><?php echo $this->event_type->name?></h3>
 
