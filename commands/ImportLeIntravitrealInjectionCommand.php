@@ -26,6 +26,7 @@ class ImportLeIntravitrealInjectionCommand extends RelatedImportComplexCommand
 	const NOPAS = true;
 	const EP_HOS_NUM_COLNAME = '[patient_id=patient.hos_num]';
 	
+	protected $default_user_id = 1;
 	// default firm id
 	protected $default_firm_id = 110;
 	// list of subspecialty ids in order of precedence that we want to use for firms
@@ -523,6 +524,10 @@ EOH;
 		}
 		else {
 			parent::_storeTableVal($col_spec, $value);
+			if (!isset($this->column_value_map[$col_spec][$value]) && $table == 'user') {
+				echo "WARN: " . $col_spec . " of " . $value . " not found\n";
+				$this->column_value_map[$col_spec][$value] = $this->default_user_id;
+			} 
 		}
 		
 	}
