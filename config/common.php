@@ -18,6 +18,7 @@ return array(
 		)
 	),
 	'params' => array(
-		'OphLeIntravitrealinjection_legacylink' => 'http://INTRANET3/MEHClinical/Default.aspx?patient={patient.hos_num}',
+		//enable this param to display a URL for each legacy event that will take users to an external legacy application
+		//'OphLeIntravitrealinjection_legacylink' => '',
 	)
 );
