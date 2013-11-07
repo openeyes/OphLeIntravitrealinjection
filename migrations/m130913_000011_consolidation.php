@@ -1,7 +1,37 @@
 <?php 
-class m130913_000011_event_type_OphLeIntravitrealinjection extends CDbMigration
+
+class m130913_000011_consolidation extends OEMigration
 {
+
 	public function up()
+	{
+		if (!$this->consolidate(
+			array(
+				'm130730_150253_event_type_OphLeIntravitrealinjection'
+			)
+		)
+		) {
+			$this->createTables();
+		}
+	}
+
+	public function down()
+	{
+		echo "You cannot migrate down past a consolidation migration\n";
+		return false;
+	}
+
+	public function safeUp()
+	{
+		$this->up();
+	}
+
+	public function safeDown()
+	{
+		$this->down();
+	}
+
+	protected function createTables()
 	{
 		// --- EVENT TYPE ENTRIES ---
 
@@ -54,30 +84,5 @@ class m130913_000011_event_type_OphLeIntravitrealinjection extends CDbMigration
 
 	}
 
-	public function down()
-	{
-		// --- drop any element related tables ---
-		// --- drop element tables ---
-		$this->dropTable('et_ophleinjection_injection');
-
-		// --- delete event entries ---
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphLeIntravitrealinjection'))->queryRow();
-
-		foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where('event_type_id=:event_type_id', array(':event_type_id'=>$event_type['id']))->queryAll() as $row) {
-			$this->delete('audit', 'event_id='.$row['id']);
-			$this->delete('event', 'id='.$row['id']);
-		}
-
-		// --- delete entries from element_type ---
-		$this->delete('element_type', 'event_type_id='.$event_type['id']);
-
-		// --- delete entries from event_type ---
-		$this->delete('event_type', 'id='.$event_type['id']);
-
-		// echo "m000000_000001_event_type_OphLeIntravitrealinjection does not support migration down.\n";
-		// return false;
-		echo "If you are removing this module you may also need to remove references to it in your configuration files\n";
-		return true;
-	}
 }
 
