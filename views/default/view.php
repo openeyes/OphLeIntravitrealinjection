@@ -18,23 +18,15 @@
  */
 ?>
 
-<?php
-	$this->breadcrumbs=array($this->module->id);
-	$this->header();
-
+<?
+$this->beginContent('//patient/event_container');
 	if ($link = $this->generateLegacyUrl()) {
 		$this->event_actions[] = EventAction::link('Legacy Data', $link, null, array('target' => '_blank'));
 	}
 ?>
 
-<?php  $this->renderPartial('//patient/event_actions'); ?>
-
-<h3 class="withEventIcon"><?php echo $this->event_type->name?></h3>
-
-<div>
+	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 	<?php $this->renderDefaultElements($this->action->id)?>
 	<?php $this->renderOptionalElements($this->action->id)?>
-	<div class="cleartall"></div>
-</div>
 
-<?php $this->footer()?>
+<?php $this->endContent() ;?>

@@ -18,21 +18,23 @@
  */
 ?>
 
-<div class="cols2 clearfix">
-	<div class="left eventDetail">
-		<?php if ($element->hasRight()) {
-			$this->renderPartial('view_' . get_class($element) . '_fields',
-				array('side' => 'right', 'element' => $element));
-		} else { ?>
-		Not recorded
-		<?php } ?>
+<section class="element">
+	<div class="element-data element-eyes row">
+		<div class="element-eye right-eye column">
+			<?php if ($element->hasRight()) {
+				$this->renderPartial('view_' . get_class($element) . '_fields',
+					array('side' => 'right', 'element' => $element));
+			} else { ?>
+				<div class="data-value">Not recorded</div>
+			<?php } ?>
+		</div>
+		<div class="element-eye left-eye column">
+			<?php if ($element->hasLeft()) {
+				$this->renderPartial('view_' . get_class($element) . '_fields',
+					array('side' => 'left', 'element' => $element));
+			} else { ?>
+				<div class="data-value">Not recorded</div>
+			<?php } ?>
+		</div>
 	</div>
-	<div class="right eventDetail">
-		<?php if ($element->hasLeft()) {
-			$this->renderPartial('view_' . get_class($element) . '_fields',
-				array('side' => 'left', 'element' => $element));
-		} else { ?>
-		Not recorded
-		<?php } ?>
-	</div>
-</div>
+</section>

@@ -18,12 +18,21 @@
  */
 ?>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_drug_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_drug'}->name ?></div>
+
+<div class="row data-row">
+	<div class="large-5 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_drug_id') ?>:</div>
+	</div>
+	<div class="large-7 column">
+		<div class="data-value"><?php echo $element->{$side . '_drug'}->name ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_number') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_number'} ?></div>
+<div class="row data-row">
+	<div class="large-5 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_number') ?>:</div>
+	</div>
+	<div class="large-7 column">
+		<div class="data-value"><?php echo $element->{$side . '_number'} ?></div>
+	</div>
 </div>
