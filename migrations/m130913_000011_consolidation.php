@@ -1,40 +1,38 @@
 <?php 
-class m130913_000011_event_type_OphLeIntravitrealinjection extends OEMigration
+
+class m130913_000011_consolidation extends OEMigration
 {
+
 	public function up()
 	{
 		if (!$this->consolidate(
 			array(
-				"m130730_150253_event_type_OphLeIntravitrealinjection",
+				'm130730_150253_event_type_OphLeIntravitrealinjection'
 			)
 		)
 		) {
-			return $this->createTables();
+			$this->createTables();
 		}
 	}
 
-	public function createTables()
+	public function down()
 	{
-		if (!Yii::app()->hasModule('OphTrIntravitrealinjection')) {
-			echo "
-			-----------------------------------
-			Skipping OphTrIntravitrealinjection - missing module dependency
-			-----------------------------------
-			";
-			return false;
-			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
-		}
+		echo "You cannot migrate down past a consolidation migration\n";
+		return false;
+	}
 
-		if (!in_array('ophtrintravitinjection_treatment_drug',Yii::app()->db->getSchema()->tableNames)) {
-			echo "
-			-----------------------------------
-			Skipping OphTrIntravitrealinjection - missing module table ophtrintravitinjection_treatment_drug dependency
-			-----------------------------------
-			";
-			return false;
-			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
-		}
+	public function safeUp()
+	{
+		$this->up();
+	}
 
+	public function safeDown()
+	{
+		$this->down();
+	}
+
+	protected function createTables()
+	{
 		// --- EVENT TYPE ENTRIES ---
 
 		// create an event_type entry for this event type name if one doesn't already exist
@@ -86,30 +84,5 @@ class m130913_000011_event_type_OphLeIntravitrealinjection extends OEMigration
 
 	}
 
-	public function down()
-	{
-		// --- drop any element related tables ---
-		// --- drop element tables ---
-		$this->dropTable('et_ophleinjection_injection');
-
-		// --- delete event entries ---
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphLeIntravitrealinjection'))->queryRow();
-
-		foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where('event_type_id=:event_type_id', array(':event_type_id'=>$event_type['id']))->queryAll() as $row) {
-			$this->delete('audit', 'event_id='.$row['id']);
-			$this->delete('event', 'id='.$row['id']);
-		}
-
-		// --- delete entries from element_type ---
-		$this->delete('element_type', 'event_type_id='.$event_type['id']);
-
-		// --- delete entries from event_type ---
-		$this->delete('event_type', 'id='.$event_type['id']);
-
-		// echo "m000000_000001_event_type_OphLeIntravitrealinjection does not support migration down.\n";
-		// return false;
-		echo "If you are removing this module you may also need to remove references to it in your configuration files\n";
-		return true;
-	}
 }
 
