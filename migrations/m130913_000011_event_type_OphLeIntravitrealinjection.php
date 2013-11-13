@@ -1,8 +1,40 @@
 <?php 
-class m130913_000011_event_type_OphLeIntravitrealinjection extends CDbMigration
+class m130913_000011_event_type_OphLeIntravitrealinjection extends OEMigration
 {
 	public function up()
 	{
+		if (!$this->consolidate(
+			array(
+				"m130730_150253_event_type_OphLeIntravitrealinjection",
+			)
+		)
+		) {
+			return $this->createTables();
+		}
+	}
+
+	public function createTables()
+	{
+		if (!Yii::app()->hasModule('OphTrIntravitrealinjection')) {
+			echo "
+			-----------------------------------
+			Skipping OphTrIntravitrealinjection - missing module dependency
+			-----------------------------------
+			";
+			return false;
+			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
+		}
+
+		if (!in_array('ophtrintravitinjection_treatment_drug',Yii::app()->db->getSchema()->tableNames)) {
+			echo "
+			-----------------------------------
+			Skipping OphTrIntravitrealinjection - missing module table ophtrintravitinjection_treatment_drug dependency
+			-----------------------------------
+			";
+			return false;
+			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
+		}
+
 		// --- EVENT TYPE ENTRIES ---
 
 		// create an event_type entry for this event type name if one doesn't already exist
