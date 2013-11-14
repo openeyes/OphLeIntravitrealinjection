@@ -84,15 +84,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 2, ../sass/components/_event.scss */
-.event.ophleintravitrealinjection {
+/* line 1, ../sass/components/_event.scss */
+.event {
   border-color: #a29d8a;
 }
-/* line 4, ../sass/components/_event.scss */
-.event.ophleintravitrealinjection .event-content {
-  background-image: url('../img/watermark.png?1384360254');
+/* line 3, ../sass/components/_event.scss */
+.event .event-content {
+  background-image: url('../img/watermark.png?1384433912');
 }
-/* line 7, ../sass/components/_event.scss */
-.event.ophleintravitrealinjection .event-title {
+/* line 6, ../sass/components/_event.scss */
+.event .event-title {
   background-image: url('../img/medium.png?1384360254');
 }
