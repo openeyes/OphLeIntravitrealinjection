@@ -21,7 +21,7 @@
 <?
 $this->beginContent('//patient/event_container');
 	if ($link = $this->generateLegacyUrl()) {
-		$this->event_actions[] = EventAction::link('Legacy Data', $link, null, array('target' => '_blank'));
+		$this->event_actions[] = EventAction::link('Legacy Data', $link, null, array('class' => 'button small', 'target' => '_blank'));
 	}
 ?>
 
