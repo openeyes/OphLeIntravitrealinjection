@@ -22,6 +22,11 @@ class DefaultController extends BaseEventTypeController
 	{
 		parent::actionPrint($id);
 	}
+
+	public function canDelete()
+	{
+		return false;
+	}
 	
 	/**
 	 * if a legacy link is configured in the app (OphLeIntravitrealinjection_legacylink)
