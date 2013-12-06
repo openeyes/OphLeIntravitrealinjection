@@ -242,8 +242,6 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 					throw new Exception('unable to create event ' . print_r($event->getErrors(),true));
 				}
 				
-				$audit_data = $this->attributes;
-				
 				$this->event_id = $event->id;
 				$this->archive_firm_id = null;
 				$this->archive_hosnum = null;
@@ -251,7 +249,7 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 					throw new Exception('unable to save unarchived legacy injection ' . $this->id . ' ' . print_r($this->getErrors(),true));
 				}
 				
-				Audit::add(get_class($this), 'Unarchived', $audit_data);
+				Audit::add(get_class($this), 'Unarchived', $this->id);
 				$transaction->commit();
 				
 			} catch (Exception $e) {
