@@ -1,7 +1,12 @@
 Release History
 ===============
 
+1.5.0
+-----
++ Consolidated migrations
++ Removed Moorfields specific data
++ Refactored views to match core
+
 1.4
 ---
-
 Initial release
