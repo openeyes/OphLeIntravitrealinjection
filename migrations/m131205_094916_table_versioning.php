@@ -46,10 +46,16 @@ CREATE TABLE `et_ophleinjection_injection_version` (
 		$this->addColumn('et_ophleinjection_injection_version','version_id','int(10) unsigned NOT NULL');
 		$this->addPrimaryKey('version_id','et_ophleinjection_injection_version','version_id');
 		$this->alterColumn('et_ophleinjection_injection_version','version_id','int(10) unsigned NOT NULL AUTO_INCREMENT');
+
+		$this->addColumn('et_ophleinjection_injection','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('et_ophleinjection_injection_version','deleted','tinyint(1) unsigned not null');
 	}
 
 	public function down()
 	{
+		$this->dropColumn('et_ophleinjection_injection','deleted');
+		$this->dropColumn('et_ophleinjection_injection_version','deleted');
+
 		$this->dropTable('et_ophleinjection_injection_version');
 	}
 }
