@@ -54,7 +54,6 @@ CREATE TABLE `et_ophleinjection_injection_version` (
 	public function down()
 	{
 		$this->dropColumn('et_ophleinjection_injection','deleted');
-		$this->dropColumn('et_ophleinjection_injection_version','deleted');
 
 		$this->dropTable('et_ophleinjection_injection_version');
 	}
