@@ -81,6 +81,7 @@ class OphLeIntravitrealinjection_API extends BaseAPI
 				if ($drug == null || $prev->{$side . '_drug_id'} == $drug->id) {
 					$res[] = array(
 						$side . '_drug_id' => $prev->{$side . '_drug_id'}, 
+						$side . '_drug' => $prev->{$side . '_drug'}->name,
 						$side . '_number' => $prev->{$side . '_number'},
 						'date' => $prev->created_date,
 						'event_id' => $prev->event_id,
