@@ -82,7 +82,8 @@ class OphLeIntravitrealinjection_API extends BaseAPI
 					$res[] = array(
 						$side . '_drug_id' => $prev->{$side . '_drug_id'}, 
 						$side . '_number' => $prev->{$side . '_number'},
-						'date' => $prev->created_date
+						'date' => $prev->created_date,
+						'event_id' => $prev->event_id,
 					);
 				}
 			}
