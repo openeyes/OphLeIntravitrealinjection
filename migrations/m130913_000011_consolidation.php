@@ -43,7 +43,7 @@ class m130913_000011_consolidation extends OEMigration
 			//throw new Exception("OphTrIntravitrealinjection is required for this module to work");
 		}
 
-		if (!in_array('ophtrintravitinjection_treatment_drug',Yii::app()->db->getSchema()->tableNames)) {
+		if (!in_array('ophtrintravitinjection_treatment_drug',$this->dbConnection->getSchema()->tableNames)) {
 			echo "
 			-----------------------------------
 			Skipping OphTrIntravitrealinjection - missing module table ophtrintravitinjection_treatment_drug dependency
