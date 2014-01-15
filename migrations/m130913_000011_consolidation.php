@@ -100,7 +100,7 @@ class m130913_000011_consolidation extends OEMigration
 				'CONSTRAINT `et_ophleinjection_injection_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`)',
 				'CONSTRAINT `et_ophleinjection_injection_left_drug_id_fk` FOREIGN KEY (`left_drug_id`) REFERENCES `ophtrintravitinjection_treatment_drug` (`id`)',
 				'CONSTRAINT `et_ophleinjection_injection_right_drug_id_fk` FOREIGN KEY (`right_drug_id`) REFERENCES `ophtrintravitinjection_treatment_drug` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 	}
 
