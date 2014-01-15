@@ -14,7 +14,7 @@ CREATE TABLE `et_ophleinjection_injection_version` (
   `left_number` int(10) unsigned DEFAULT NULL,
   `right_number` int(10) unsigned DEFAULT NULL,
   `archive_firm_id` int(10) unsigned DEFAULT NULL,
-  `archive_hosnum` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+  `archive_hosnum` varchar(40) DEFAULT NULL,
   `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
   `last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
   `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -32,7 +32,7 @@ CREATE TABLE `et_ophleinjection_injection_version` (
   CONSTRAINT `acv_et_ophleinjection_injection_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`),
   CONSTRAINT `acv_et_ophleinjection_injection_left_drug_id_fk` FOREIGN KEY (`left_drug_id`) REFERENCES `ophtrintravitinjection_treatment_drug` (`id`),
   CONSTRAINT `acv_et_ophleinjection_injection_right_drug_id_fk` FOREIGN KEY (`right_drug_id`) REFERENCES `ophtrintravitinjection_treatment_drug` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('et_ophleinjection_injection_version','id','int(10) unsigned NOT NULL');
