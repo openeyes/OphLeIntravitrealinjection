@@ -1,5 +1,3 @@
-var path = require('path');
-
 module.exports = function(grunt) {
 	return {
 		dist: {
@@ -8,10 +6,7 @@ module.exports = function(grunt) {
 				cssDir: 'assets/css',
 				imagesDir: 'assets/img',
 				generatedImagesDir: 'assets/img/sprites',
-				importPath: [
-					path.join('..', '..', '..', 'protected', 'assets', 'sass'),
-					path.join('..', '..', '..', 'protected', 'assets', 'components', 'foundation', 'scss')
-				],
+				importPath: '../../../protected/assets/sass',
 				outputStyle: 'expanded',
 				relativeAssets: true,
 				httpPath: '',
