@@ -39,22 +39,16 @@ CREATE TABLE `et_ophleinjection_injection_version` (
 		$this->dropPrimaryKey('id','et_ophleinjection_injection_version');
 
 		$this->createIndex('et_ophleinjection_injection_aid_fk','et_ophleinjection_injection_version','id');
-		$this->addForeignKey('et_ophleinjection_injection_aid_fk','et_ophleinjection_injection_version','id','et_ophleinjection_injection','id');
 
 		$this->addColumn('et_ophleinjection_injection_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
 		$this->addColumn('et_ophleinjection_injection_version','version_id','int(10) unsigned NOT NULL');
 		$this->addPrimaryKey('version_id','et_ophleinjection_injection_version','version_id');
 		$this->alterColumn('et_ophleinjection_injection_version','version_id','int(10) unsigned NOT NULL AUTO_INCREMENT');
-
-		$this->addColumn('et_ophleinjection_injection','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('et_ophleinjection_injection_version','deleted','tinyint(1) unsigned not null');
 	}
 
 	public function down()
 	{
-		$this->dropColumn('et_ophleinjection_injection','deleted');
-
 		$this->dropTable('et_ophleinjection_injection_version');
 	}
 }
