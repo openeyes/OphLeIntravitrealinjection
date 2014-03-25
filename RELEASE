@@ -1,6 +1,12 @@
 Release History
 ===============
 
+1.6.0
+-----
++ Asset refactoring
++ Basic Medical Retina episode summary
++ Rationalise db character set and collation
+
 1.5.0
 -----
 + Consolidated migrations
