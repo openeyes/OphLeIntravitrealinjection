@@ -141,33 +141,15 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 		));
 	}
 
-
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
-	}
-	
 	/**
 	 * (non-PHPdoc)
 	 * @see BaseEventTypeElement::getInfoText()
 	 */
 	public function getInfoText()
 	{
-		if ($this->eye_id == SplitEventTypeElement::LEFT) {
+		if ($this->eye_id == Eye::LEFT) {
 			return $this->eye->name . ": " . $this->left_drug->name;
-		} elseif ($this->eye_id == SplitEventTypeElement::RIGHT) {
+		} elseif ($this->eye_id == Eye::RIGHT) {
 			return $this->eye->name . ": " . $this->right_drug->name;
 		} else {
 			if ($this->right_drug_id == $this->left_drug_id) {
@@ -177,12 +159,12 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 			}
 		}
 	}
-	
+
 	/**
 	 * unarchive this injection and attach it to the provided patient object
 	 * (typically this is expected to be called when the patient is found for the
 	 * first time by a PAS search)
-	 * 
+	 *
 	 * @param Patient $patient
 	 * @throws Exception
 	 */
@@ -192,18 +174,17 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 		// has been called in error
 		if ($this->archive_firm_id) {
 			$transaction = Yii::app()->db->beginTransaction();
-			
+
 			try {
 				$firm = Firm::model()->findByPk($this->archive_firm_id);
 				if (!$firm) {
 					$firm = Firm::model()->findByPk(Yii::app()->param['OphLeIntravitrealinjection_default_firm_id']);
 				}
-				
+
 				// Don't want to set up an episode that clashes with one that is already open
 				// (this shouldn't happen, but it is possible that two legacy injections might be unarchived for the same patient
 				// and have different firm assigments)
-				$subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-				if (!$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialty_id, $patient->id) ) {
+				if (!$episode = Episode::model()->getCurrentEpisodeByFirm($patient->id, $firm) ) {
 					$episode = new Episode();
 					$episode->attributes = array('patient_id' => $patient->id, 'firm_id' => $firm->id);
 					$episode->start_date = $this->created_date;
@@ -212,7 +193,7 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 					$episode->last_modified_user_id = $this->last_modified_user_id;
 					$episode->last_modified_date = $this->last_modified_date;
 				}
-				
+
 				// set the eye assignment
 				if (!$episode->eye_id) {
 					$episode->eye_id = $this->eye_id;
@@ -222,15 +203,15 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 						$episode->eye_id = Eye::BOTH;
 					}
 				}
-				
+
 				if (!$episode->save(true, null, true)) {
 					throw new Exception('unable to create episode ' . print_r($episode->getErrors(),true));;
 				}
-				
+
 				$event_type = EventType::model()->find('class_name = ?', array('OphLeIntravitrealinjection'));
-				
+
 				$event_type_id = $event_type->id;
-				
+
 				$event = new Event();
 				$event->attributes = array('episode_id' => $episode->id, 'event_type_id' => $event_type_id);
 				$event->info = $this->getInfoText();
@@ -238,25 +219,26 @@ class Element_OphLeIntravitrealinjection_IntravitrealInjection extends SplitEven
 				$event->created_date = $this->created_date;
 				$event->last_modified_user_id = $this->last_modified_user_id;
 				$event->last_modified_date = $this->last_modified_date;
+				$event->event_date = $this->created_date;
 				if (!$event->save(true, null, true)) {
 					throw new Exception('unable to create event ' . print_r($event->getErrors(),true));
 				}
-				
+
 				$this->event_id = $event->id;
 				$this->archive_firm_id = null;
 				$this->archive_hosnum = null;
 				if (!$this->save(true, null, true)) {
 					throw new Exception('unable to save unarchived legacy injection ' . $this->id . ' ' . print_r($this->getErrors(),true));
 				}
-				
+
 				Audit::add(get_class($this), 'Unarchived', $this->id);
 				$transaction->commit();
-				
+
 			} catch (Exception $e) {
 				$transaction->rollback();
 				throw $e;
 			}
-		}		
+		}
 	}
 }
 ?>
