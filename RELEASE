@@ -1,6 +1,10 @@
 Release History
 ===============
 
+1.7.0
+-----
++ compatibility with 1.7 core
+
 1.6.0
 -----
 + Asset refactoring
