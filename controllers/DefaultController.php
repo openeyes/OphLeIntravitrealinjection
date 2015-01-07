@@ -2,13 +2,17 @@
 
 class DefaultController extends BaseEventTypeController
 {
-	public function initActionView()
+	public function checkEditAccess()
 	{
-		parent::initActionView();
-		$this->editable = false;
+		return false;
 	}
 
-	public function canDelete()
+	public function checkDeleteAccess()
+	{
+		return false;
+	}
+
+	public function checkRequestDeleteAccess()
 	{
 		return false;
 	}
