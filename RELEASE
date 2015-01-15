@@ -1,6 +1,10 @@
 Release History
 ===============
 
+1.8.0
+-----
++ permissions fix
+
 1.7.0
 -----
 + compatibility with 1.7 core
