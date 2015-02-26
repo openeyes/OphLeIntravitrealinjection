@@ -1,0 +1,7 @@
+{
+  "name": "openeyes/oph-le-intravitreal-injection",
+  "description": "Module for migrating legacy injection events in OpenEyes",
+  "require": {
+    "openeyes/oph-tr-intravitreal-injection": "dev-hotfix/composer"
+  }
+}
