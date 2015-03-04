@@ -1,0 +1,9 @@
+{
+  "name": "openeyes/oph-le-intravitreal-injection",
+  "description": "Module for migrating legacy injection events in OpenEyes",
+  "type": "openeyes-module",
+  "require": {
+    "openeyes/module-installer": "*",
+    "openeyes/oph-tr-intravitreal-injection": "dev-master"
+  }
+}
