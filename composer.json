@@ -4,6 +4,6 @@
   "type": "openeyes-module",
   "require": {
     "openeyes/module-installer": "*",
-    "openeyes/oph-tr-intravitreal-injection": "dev-hotfix/composer"
+    "openeyes/oph-tr-intravitreal-injection": "dev-master"
   }
 }
