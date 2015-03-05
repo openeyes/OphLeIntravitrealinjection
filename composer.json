@@ -1,5 +1,5 @@
 {
-  "name": "openeyes/oph-le-intravitreal-injection",
+  "name": "openeyes/oph-le-intravitrealinjection",
   "description": "Module for migrating legacy injection events in OpenEyes",
   "type": "openeyes-module",
   "require": {
