@@ -4,6 +4,6 @@
   "type": "openeyes-module",
   "require": {
     "openeyes/module-installer": "*",
-    "openeyes/oph-tr-intravitreal-injection": "dev-master"
+    "openeyes/oph-tr-intravitreal-injection": "dev-develop"
   }
 }
